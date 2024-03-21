@@ -16,3 +16,8 @@ async def converter_moeda_api(solicitacao: SolicitacaoConversaoMoeda):
         valor=solicitacao.valor,
         valor_convertido=valor_convertido,
     )
+
+
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"status": "OK"}
