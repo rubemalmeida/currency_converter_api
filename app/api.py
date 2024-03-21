@@ -7,15 +7,18 @@ app = FastAPI()
 
 @app.post("/converter_moeda/", response_model=RespostaConversaoMoeda)
 async def converter_moeda_api(solicitacao: SolicitacaoConversaoMoeda):
-    valor_convertido = converter_moeda(
-        solicitacao.moeda_origem, solicitacao.moeda_destino, solicitacao.quantidade
-    )
-    return RespostaConversaoMoeda(
-        moeda_origem=solicitacao.moeda_origem,
-        moeda_destino=solicitacao.moeda_destino,
-        valor=solicitacao.valor,
-        valor_convertido=valor_convertido,
-    )
+    try:
+        valor_convertido = converter_moeda(
+            solicitacao.moeda_origem, solicitacao.moeda_destino, solicitacao.valor
+        )
+        return RespostaConversaoMoeda(
+            moeda_origem=solicitacao.moeda_origem,
+            moeda_destino=solicitacao.moeda_destino,
+            valor=solicitacao.valor,
+            valor_convertido=valor_convertido,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/healthcheck")
