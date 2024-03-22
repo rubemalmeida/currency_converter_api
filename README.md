@@ -2,7 +2,7 @@
 
 Este arquivo README vai te ajudar a rodar a aplicação no seu computador. Let's vamos!
 
-## TL;DL
+## TL;DR
 ```bash
 docker build -t currency_converter_api . && docker run -d --name currency_converter_api -p 80:80 currency_converter_api && sleep 5 && curl -X GET "http://localhost:80/healthcheck"
 ```
