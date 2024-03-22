@@ -28,4 +28,4 @@ docker build -t currency_converter_api .
 docker run -d --name currency_converter_api -p 80:80 currency_converter_api
 ```
 
-E that's all folks! 🎉 A API já está rodando e disponível em http://localhost:80.
+E that's all folks! 🎉 A API já está rodando e disponível em http://localhost:80/docs.
