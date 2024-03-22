@@ -1,26 +1,45 @@
-from fastapi import FastAPI, HTTPException
-from app.models import SolicitacaoConversaoMoeda, RespostaConversaoMoeda
-from app.services import converter_moeda
+from fastapi import APIRouter, HTTPException, Query
+from models import SolicitacaoConversaoMoeda, RespostaConversaoMoeda
+from services import converter_moeda
 
-app = FastAPI()
+api_router = APIRouter()
 
 
-@app.post("/converter_moeda/", response_model=RespostaConversaoMoeda)
-async def converter_moeda_api(solicitacao: SolicitacaoConversaoMoeda):
-    try:
-        valor_convertido = converter_moeda(
-            solicitacao.moeda_origem, solicitacao.moeda_destino, solicitacao.valor
+@api_router.get("/converter_moeda", response_model=RespostaConversaoMoeda)
+async def converter_moeda_api(
+    origem: str = Query(
+        ...,
+        description="A moeda de origem. As opções são: USD, BRL, EUR, BTC, ETH",
+        example="USD",
+    ),
+    destino: str = Query(
+        ...,
+        description="A moeda de destino. As opções são: USD, BRL, EUR, BTC, ETH",
+        example="BRL",
+    ),
+    valor: float = Query(..., description="O valor a ser convertido", example=100.0),
+):
+    moedas_aceitas = ["USD", "BRL", "EUR", "BTC", "ETH"]
+    if origem not in moedas_aceitas:
+        raise HTTPException(
+            status_code=400, detail=f"Moeda de origem {origem} não é aceita"
         )
+    if destino not in moedas_aceitas:
+        raise HTTPException(
+            status_code=400, detail=f"Moeda de destino {destino} não é aceita"
+        )
+    try:
+        valor_convertido = converter_moeda(origem, destino, valor)
         return RespostaConversaoMoeda(
-            moeda_origem=solicitacao.moeda_origem,
-            moeda_destino=solicitacao.moeda_destino,
-            valor=solicitacao.valor,
+            moeda_origem=origem,
+            moeda_destino=destino,
+            valor=valor,
             valor_convertido=valor_convertido,
         )
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.get("/healthcheck")
+@api_router.get("/healthcheck")
 async def healthcheck():
     return {"status": "OK"}
