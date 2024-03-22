@@ -1,4 +1,4 @@
-# Olá, seja bem-vindos ao currency_converter_api! 🚀
+# Olá, seja bem-vindo ao currency_converter_api! 🚀
 
 Este arquivo README vai te ajudar a rodar a aplicação no seu computador. Let's vamos!
 
